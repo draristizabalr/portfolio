@@ -1,7 +1,7 @@
 <header class="bg-base-100">
   <div class="navbar bg-base-100">
     <div class="navbar-start">
-      <div class="dropdown">
+      <summary class="dropdown">
         <div tabindex="0" role="button" class="btn btn-ghost lg:hidden">
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -22,20 +22,50 @@
           tabindex="0"
           class="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow"
         >
-          <li><a>About</a></li>
-          <li><a>Skills</a></li>
-          <li><a>Projects</a></li>
-          <li><a>Contact</a></li>
+          <li>
+            <a
+              routerLink="/"
+              routerLinkActive="bg-blue-400"
+              [routerLinkActiveOptions]="{ exact: true }"
+              >Home</a
+            >
+          </li>
+          <li>
+            <a routerLink="about" routerLinkActive="bg-blue-400">About</a>
+          </li>
+          <li>
+            <a routerLink="skills" routerLinkActive="bg-blue-400">Skills</a>
+          </li>
+          <li>
+            <a routerLink="projects" routerLinkActive="bg-blue-400">Projects</a>
+          </li>
+          <li>
+            <a routerLink="contact" routerLinkActive="bg-blue-400">Contact</a>
+          </li>
         </ul>
-      </div>
+      </summary>
       <a class="btn btn-ghost text-xl" routerLink="/">Portfolio</a>
     </div>
     <div class="navbar-center hidden lg:flex">
       <ul class="menu menu-horizontal px-1">
+        <li>
+          <a
+            routerLink="/"
+            routerLinkActive="bg-blue-400"
+            [routerLinkActiveOptions]="{ exact: true }"
+            >Home</a
+          >
+        </li>
         <li><a routerLink="about" routerLinkActive="bg-blue-400">About</a></li>
-        <li><a routerLink="skills" routerLinkActive="bg-blue-400">Skills</a></li>
-        <li><a routerLink="projects" routerLinkActive="bg-blue-400">Projects</a></li>
-        <li><a routerLink="contact" routerLinkActive="bg-blue-400">Contact</a></li>
+        <li>
+          <a routerLink="skills" routerLinkActive="bg-blue-400">Skills</a>
+        </li>
+        <li>
+          <a routerLink="projects" routerLinkActive="bg-blue-400">Projects</a>
+        </li>
+        <li>
+          <a routerLink="contact" routerLinkActive="bg-blue-400">Contact</a>
+        </li>
       </ul>
     </div>
     <div class="navbar-end">
