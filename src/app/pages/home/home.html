@@ -1,22 +1,17 @@
-<div class="hero h-full bg-base-200">
-  <div class="hero-content text-center">
-    <div class="card bg-base-100 w-96 shadow-sm">
-  <figure>
+<div class="hero bg-base-200 h-full">
+  <div class="hero-content flex-col lg:flex-row">
     <img
-      src="https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp"
-      alt="Shoes" />
-  </figure>
-  <div class="card-body">
-    <h2 class="card-title">
-      Card Title
-      <div class="badge badge-secondary">NEW</div>
-    </h2>
-    <p>A card component has a figure, a body part, and inside body there are title and actions parts</p>
-    <div class="card-actions justify-end">
-      <div class="badge badge-outline">Fashion</div>
-      <div class="badge badge-outline">Products</div>
+      [ngSrc]="'photos/profile.webp'"
+      width="200"
+      height="280"
+      class="max-w-sm rounded-lg shadow-2xl"
+    />
+    <div>
+      <h1 class="text-5xl font-bold text-accent">David Ricardo Aristizábal Ramírez</h1>
+      <p class="py-6">
+        Fullstack developer with 3 years of experience in web development, specializing in Angular and Node.js. Passionate about creating efficient and scaleable applicacionts.
+      </p>
+      <button class="btn btn-primary" routerLink="about">Get Started</button>
     </div>
-  </div>
-</div>
   </div>
 </div>
