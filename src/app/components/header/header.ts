@@ -1,14 +1,32 @@
-import { Component } from '@angular/core';
+import { Component, effect } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { RouterLink, RouterLinkActive } from '@angular/router';
+import { map } from 'rxjs';
 
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [RouterLink, RouterLinkActive],
+  imports: [RouterLink, RouterLinkActive, ReactiveFormsModule],
   templateUrl: './header.html',
-  styleUrl: './header.css'
+  styleUrl: './header.css',
 })
 export class HeaderComponent {
+  // Signals
+  themeToggler = new FormControl('themeToggler', { nonNullable: true });
+  theme = toSignal(
+    this.themeToggler.valueChanges.pipe(
+      map((value) => {
+        if (value) return 'dark';
+        return 'cupcake';
+      })
+    )
+  );
 
+  constructor() {
+    effect(() => {
+      window.sessionStorage.setItem('darkTheme', this.theme() ?? 'dark');
+      document.documentElement.setAttribute('data-theme', this.theme() ?? 'dark');
+    });
+  }
 }
-
