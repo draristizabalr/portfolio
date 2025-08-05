@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
-import { TIMELINE_INFO } from '../../pages/about/constants/timeline.constant';
+import { TIMELINE_INFO } from '../../constants/timeline.constant';
+
 
 @Component({
   selector: 'app-timeline',

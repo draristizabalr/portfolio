@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
-import { SkillsProgramingLanguagesComponent } from '../../components/skills-programing-languages/skills-programing-languages.component';
 import { skills } from './constants';
+import { SkillsProgramingLanguagesComponent } from './components/skills-programing-languages/skills-programing-languages.component';
 
 @Component({
   selector: 'app-skills',

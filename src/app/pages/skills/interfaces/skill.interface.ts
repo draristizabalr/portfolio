@@ -1,4 +1,4 @@
-import { iconName } from "../../../components/icon-component/icon-component.component";
+import { iconName } from "../../../shared/components/icon-component/icon-component.component";
 
 export interface Skill {
   technologyName: string;
