@@ -3,12 +3,16 @@
   class="py-16 bg-info px-4 max-h-[calc(100vh-169px)] h-full p-4"
 >
   <div
-    class="mockup-browser border border-base-300 w-full max-h-4/5 bg-base-200"
+    class="mockup-browser border border-base-100 w-full max-h-4/5 bg-base-100 overflow-y-auto"
   >
-    <div class="mockup-browser-toolbar">
-      <div class="input">david-aristizabal.skills.com</div>
-    </div>
-    <section class="grid grid-cols-2 gap-4 m-4 content-center justify-items-center">
+    <section class="sticky top-0">
+      <div class="mockup-browser-toolbar">
+        <div class="input">david-aristizabal.skills.com</div>
+      </div>
+    </section>
+    <section
+      class="grid grid-cols-1 gap-4 m-4 content-center justify-items-center 2xl:justify-items-start 2xl:grid-cols-2"
+    >
       @for (skill of skills; track skill.technologyName) {
         <app-skills-programing-languages
           [technologyName]="skill.technologyName"
@@ -19,5 +23,13 @@
         ></app-skills-programing-languages>
       }
     </section>
+  </div>
+  <div class="bg-base-100 p-4 rounded-box mt-4 text-center">
+    <h2 class="text-2xl font-bold mb-2">Languages</h2>
+    <div class="flex flex-row gap-4 justify-center items-center">
+      <span class="badge badge-xl badge-primary max-lg:badge-md max-md:h-fit">Spanish - Native</span>
+      <span class="badge badge-xl badge-secondary max-lg:badge-md max-md:h-fit">English - B1</span>
+      <span class="badge badge-xl badge-accent max-lg:badge-md max-md:h-fit">Portuguese - A2</span>
+    </div>
   </div>
 </main>

@@ -1,18 +1,17 @@
 <section class="rounded-lg p-4 bg-base-50">
-  <div class="stats shadow">
-    <div class="stat">
+  <div class="stats shadow w-full">
+    <div class="stat w-40 lg:w-52">
       <div class="stat-title">Technology</div>
-      <div class="stat-value">
+      <div class="stat-value max-lg:text-lg">
         {{ technologyName() }}
       </div>
     </div>
 
-    <div class="stat">
-      <div class="stat-figure">
+    <div class="stat w-40 lg:w-52">
+      <div class="stat-figure max-xs:hidden">
         <svg
+          class="w-6 h-6 lg:w-10 lg:h-10"
           xmlns="http://www.w3.org/2000/svg"
-          width="40"
-          height="40"
           viewBox="0 0 24 24"
         >
           <path
@@ -21,17 +20,23 @@
           />
         </svg>
       </div>
-      <div class="stat-title">Years of experience</div>
-      <div class="stat-value">
-        {{ yearsOfExperience() }} Years
+      <div class="stat-title">Experience</div>
+      <div
+        class="stat-value max-lg:text-lg"
+        [class.text-xl]="yearsOfExperience() === 'Knowledge'"
+      >
+        {{ yearsOfExperience() }}
       </div>
     </div>
 
-    <div class="stat">
+    <div class="stat w-40 lg:w-52">
       <div class="stat-figure">
-        <app-icon-component [iconName]="technologyIcon()"></app-icon-component>
+        <app-icon-component
+          [iconName]="technologyIcon()"
+          iconClass="w-10 h-10 lg:w-16 lg:h-16"
+        ></app-icon-component>
       </div>
-      <div class="stat-value capitalize">
+      <div class="stat-value max-lg:text-lg capitalize">
         {{ skillLevel() }}
       </div>
       <div class="stat-title">Level</div>

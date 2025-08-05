@@ -1,10 +1,13 @@
-import { Component, input, signal } from '@angular/core';
+import { Component, input } from '@angular/core';
 import { IconComponent, iconName } from '../icon-component/icon-component.component';
 
 @Component({
   selector: 'app-skills-programing-languages',
   imports: [IconComponent],
   templateUrl: './skills-programing-languages.component.html',
+  host: {
+    class: 'w-full',
+  }
 })
 export class SkillsProgramingLanguagesComponent {
   // Inputs
@@ -13,5 +16,4 @@ export class SkillsProgramingLanguagesComponent {
   technologyIcon = input.required<iconName>();
   colorTheme = input.required<'primary' | 'secondary' | 'accent' | 'info' | 'success' | 'warning' | 'error'>();
   skillLevel = input.required<string>();
-
 }

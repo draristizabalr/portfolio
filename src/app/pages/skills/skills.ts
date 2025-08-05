@@ -7,7 +7,6 @@ import { skills } from './constants';
   standalone: true,
   imports: [SkillsProgramingLanguagesComponent],
   templateUrl: './skills.html',
-  styleUrl: './skills.css'
 })
 export default class SkillsComponent {
   // Properties
