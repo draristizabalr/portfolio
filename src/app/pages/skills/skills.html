@@ -1,23 +1,23 @@
-<div class="container mx-auto px-4 py-8">
-  <h2 class="text-3xl font-bold text-center mb-8">Skills</h2>
-  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-    <div class="card bg-base-100 shadow-xl">
-      <div class="card-body">
-        <h2 class="card-title">Frontend</h2>
-        <p>HTML, CSS, JavaScript, TypeScript, Angular, React</p>
-      </div>
+<main
+  id="skills"
+  class="py-16 bg-info px-4 max-h-[calc(100vh-169px)] h-full p-4"
+>
+  <div
+    class="mockup-browser border border-base-300 w-full max-h-4/5 bg-base-200"
+  >
+    <div class="mockup-browser-toolbar">
+      <div class="input">david-aristizabal.skills.com</div>
     </div>
-    <div class="card bg-base-100 shadow-xl">
-      <div class="card-body">
-        <h2 class="card-title">Backend</h2>
-        <p>Node.js, Express, Python, Django, Firebase</p>
-      </div>
-    </div>
-    <div class="card bg-base-100 shadow-xl">
-      <div class="card-body">
-        <h2 class="card-title">Databases</h2>
-        <p>MongoDB, MySQL, PostgreSQL</p>
-      </div>
-    </div>
+    <section class="grid grid-cols-2 gap-4 m-4 content-center justify-items-center">
+      @for (skill of skills; track skill.technologyName) {
+        <app-skills-programing-languages
+          [technologyName]="skill.technologyName"
+          [yearsOfExperience]="skill.yearsOfExperience"
+          [technologyIcon]="skill.technologyIcon"
+          [colorTheme]="skill.colorTheme"
+          [skillLevel]="skill.skillLevel"
+        ></app-skills-programing-languages>
+      }
+    </section>
   </div>
-</div>
+</main>

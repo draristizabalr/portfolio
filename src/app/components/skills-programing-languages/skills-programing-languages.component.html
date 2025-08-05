@@ -1,0 +1,40 @@
+<section class="rounded-lg p-4 bg-base-50">
+  <div class="stats shadow">
+    <div class="stat">
+      <div class="stat-title">Technology</div>
+      <div class="stat-value">
+        {{ technologyName() }}
+      </div>
+    </div>
+
+    <div class="stat">
+      <div class="stat-figure">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="40"
+          height="40"
+          viewBox="0 0 24 24"
+        >
+          <path
+            fill="currentColor"
+            d="M12.25 2c-5.514 0-10 4.486-10 10s4.486 10 10 10s10-4.486 10-10s-4.486-10-10-10M18 13h-6.75V6h2v5H18z"
+          />
+        </svg>
+      </div>
+      <div class="stat-title">Years of experience</div>
+      <div class="stat-value">
+        {{ yearsOfExperience() }} Years
+      </div>
+    </div>
+
+    <div class="stat">
+      <div class="stat-figure">
+        <app-icon-component [iconName]="technologyIcon()"></app-icon-component>
+      </div>
+      <div class="stat-value capitalize">
+        {{ skillLevel() }}
+      </div>
+      <div class="stat-title">Level</div>
+    </div>
+  </div>
+</section>
