@@ -32,4 +32,11 @@ export class HeaderComponent {
       document.documentElement.setAttribute('data-theme', this.theme() ?? 'dark');
     });
   }
+
+  closeDropdown() {
+    const elem = document.activeElement;
+    if (elem instanceof HTMLElement) {
+      elem.blur();
+    }
+  }
 }

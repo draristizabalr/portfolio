@@ -21,14 +21,16 @@
         <ul
           tabindex="0"
           class="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow"
+          (click)="closeDropdown()"
         >
           <li>
             <a
               routerLink="/"
               routerLinkActive="bg-primary"
               [routerLinkActiveOptions]="{ exact: true }"
-              >Home</a
             >
+              Home
+            </a>
           </li>
           <li>
             <a routerLink="about" routerLinkActive="bg-primary">About</a>
@@ -53,10 +55,13 @@
             routerLink="/"
             routerLinkActive="bg-primary"
             [routerLinkActiveOptions]="{ exact: true }"
-            >Home</a
           >
+            Home
+          </a>
         </li>
-        <li><a routerLink="about" routerLinkActive="bg-primary">About</a></li>
+        <li>
+          <a routerLink="about" routerLinkActive="bg-primary">About</a>
+        </li>
         <li>
           <a routerLink="skills" routerLinkActive="bg-primary">Skills</a>
         </li>
@@ -71,11 +76,16 @@
     <div class="navbar-end">
       <label class="swap swap-rotate">
         <!-- this hidden checkbox controls the state -->
-        <input type="checkbox" class="theme-controller" value="dark" [formControl]="themeToggler"/>
+        <input
+          type="checkbox"
+          class="theme-controller"
+          value="dark"
+          [formControl]="themeToggler"
+        />
 
         <!-- sun icon -->
         <svg
-          class="swap-off h-8 w-8 sm:h-10 sm:w-10 fill-current "
+          class="swap-off h-8 w-8 sm:h-10 sm:w-10 fill-current"
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 24 24"
         >
