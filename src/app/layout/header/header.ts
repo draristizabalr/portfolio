@@ -21,7 +21,7 @@ export class HeaderComponent {
     this.themeToggler.valueChanges.pipe(
       map((value) => {
         if (value) return 'dark';
-        return 'cupcake';
+        return 'corporate';
       })
     )
   );

@@ -1,31 +1,69 @@
-<div class="hero h-full bg-base-200">
+<div class="hero h-full bg-base-200 min-h-[calc(100vh-169px)]">
   <div class="hero-content flex-col lg:flex-row-reverse">
     <div class="text-center lg:text-left">
       <h1 class="text-5xl font-bold">Contact me!</h1>
-      <p class="py-6">I am available for freelance work. If you have a project that you want to get started, think you need my help with something or just fancy saying hey, then get in touch.</p>
+      <p class="py-6">
+        If you have any questions or want to get in touch, please fill out the
+        form below.
+      </p>
     </div>
     <div class="card shrink-0 w-full max-w-sm shadow-2xl bg-base-100">
-      <form class="card-body">
+      <form class="card-body" [formGroup]="contactForm" (ngSubmit)="onSubmit()">
+        @if (invalidForm()) {
+          <div role="alert" class="alert alert-error">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-6 w-6 shrink-0 stroke-current"
+              fill="none"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
+            </svg>
+            <span>{{ errors() | errorContactForm }}</span>
+          </div>
+        }
         <div class="form-control">
           <label class="label">
             <span class="label-text">Name</span>
           </label>
-          <input type="text" placeholder="name" class="input input-bordered" required />
+          <input
+            type="text"
+            placeholder="name"
+            class="input input-bordered"
+            required
+            formControlName="name"
+          />
         </div>
         <div class="form-control">
           <label class="label">
             <span class="label-text">Email</span>
           </label>
-          <input type="email" placeholder="email" class="input input-bordered" required />
+          <input
+            type="email"
+            placeholder="email"
+            class="input input-bordered"
+            required
+            formControlName="email"
+          />
         </div>
         <div class="form-control">
           <label class="label">
             <span class="label-text">Message</span>
           </label>
-          <textarea class="textarea textarea-bordered" placeholder="Message"></textarea>
+          <textarea
+            class="textarea textarea-bordered"
+            placeholder="Message"
+            formControlName="message"
+            required
+          ></textarea>
         </div>
         <div class="form-control mt-6">
-          <button class="btn btn-primary">Send</button>
+          <button class="btn btn-primary" type="submit">Send</button>
         </div>
       </form>
     </div>

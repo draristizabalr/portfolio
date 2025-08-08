@@ -3,7 +3,7 @@ import { WorkDetail } from "../interfaces/work-detail.interface";
 export const TIMELINE_INFO: WorkDetail[] = [
   {
     title: "Software Developer",
-    company: "Universidad Nacional de Colombia",
+    company: "UNAL",
     location: "Manizales, Caldas",
     startDate: "07/2022",
     endDate: "12/2022",
