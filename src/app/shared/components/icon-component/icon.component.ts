@@ -5,7 +5,7 @@ export type iconName = 'javascript' | 'typescript' | 'react' | 'angular' | 'node
 @Component({
   selector: 'app-icon-component',
   imports: [],
-  templateUrl: './icon-component.component.html',
+  templateUrl: './icon.component.html',
 })
 export class IconComponent {
   // Inputs

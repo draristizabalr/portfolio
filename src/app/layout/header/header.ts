@@ -10,6 +10,9 @@ import { map } from 'rxjs';
   imports: [RouterLink, RouterLinkActive, ReactiveFormsModule],
   templateUrl: './header.html',
   styleUrl: './header.css',
+  host: {
+    class: 'sticky top-0 z-50'
+  }
 })
 export class HeaderComponent {
   // Signals

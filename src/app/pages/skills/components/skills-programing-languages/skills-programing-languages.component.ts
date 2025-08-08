@@ -1,5 +1,5 @@
 import { Component, input } from '@angular/core';
-import { IconComponent, iconName } from '../../../../shared/components/icon-component/icon-component.component';
+import { IconComponent, iconName } from '../../../../shared/components/icon-component/icon.component';
 
 @Component({
   selector: 'app-skills-programing-languages',
