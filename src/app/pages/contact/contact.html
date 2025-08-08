@@ -8,7 +8,11 @@
       </p>
     </div>
     <div class="card shrink-0 w-full max-w-sm shadow-2xl bg-base-100">
-      <form class="card-body" [formGroup]="contactForm" (ngSubmit)="onSubmit()">
+      <form
+        class="card-body"
+        [formGroup]="contactForm"
+        (ngSubmit)="onSubmit($event)"
+      >
         @if (invalidForm()) {
           <div role="alert" class="alert alert-error">
             <svg
@@ -27,6 +31,24 @@
             <span>{{ errors() | errorContactForm }}</span>
           </div>
         }
+        @if (emailSent()) {
+          <div role="alert" class="alert alert-success">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-6 w-6 shrink-0 stroke-current"
+              fill="none"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
+            </svg>
+            <span>Message sent successfully!</span>
+          </div>
+        }
         <div class="form-control">
           <label class="label">
             <span class="label-text">Name</span>
@@ -34,6 +56,7 @@
           <input
             type="text"
             placeholder="name"
+            name="name"
             class="input input-bordered"
             required
             formControlName="name"
@@ -45,6 +68,7 @@
           </label>
           <input
             type="email"
+            name="email"
             placeholder="email"
             class="input input-bordered"
             required
@@ -58,6 +82,7 @@
           <textarea
             class="textarea textarea-bordered"
             placeholder="Message"
+            name="message"
             formControlName="message"
             required
           ></textarea>
