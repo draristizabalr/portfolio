@@ -6,7 +6,7 @@ import { IconComponent, iconName } from '../../../../shared/components/icon-comp
   imports: [IconComponent],
   templateUrl: './skills-programing-languages.component.html',
   host: {
-    class: 'w-full',
+    class: 'w-full border-none',
   }
 })
 export class SkillsProgramingLanguagesComponent {
@@ -14,6 +14,5 @@ export class SkillsProgramingLanguagesComponent {
   technologyName = input.required<string>();
   yearsOfExperience = input.required<string>();
   technologyIcon = input.required<iconName>();
-  colorTheme = input.required<'primary' | 'secondary' | 'accent' | 'info' | 'success' | 'warning' | 'error'>();
   skillLevel = input.required<string>();
 }
