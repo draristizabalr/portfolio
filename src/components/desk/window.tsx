@@ -8,7 +8,7 @@ import { cn } from "@/lib/cn";
 const stripTones: Record<FolderTone, string> = {
   kraft: "bg-kraft",
   manila: "bg-manila",
-  olive: "bg-olive text-paper",
+  olive: "bg-sage-deep",
   paper: "bg-paper-shade",
 };
 

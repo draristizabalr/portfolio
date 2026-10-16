@@ -8,14 +8,14 @@ import { cn } from "@/lib/cn";
 const tabTones: Record<FolderTone, string> = {
   kraft: "bg-kraft",
   manila: "bg-manila",
-  olive: "bg-olive text-paper",
+  olive: "bg-sage-deep",
   paper: "bg-paper-shade",
 };
 
 const bodyTones: Record<FolderTone, string> = {
   kraft: "bg-kraft",
   manila: "bg-manila",
-  olive: "bg-[#7b8367]",
+  olive: "bg-sage",
   paper: "bg-paper-shade",
 };
 

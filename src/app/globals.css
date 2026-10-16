@@ -29,8 +29,14 @@
   --color-ink-soft: #574c40;
   --color-ink-faint: #8a7d6d;
 
-  /* Accents */
-  --color-olive: #6b7355;
+  /* Accents.
+     `olive` is dark enough to be readable as text on paper (5.0:1) and the
+     sage pair carries the one folder that is not a paper tone: sage for the
+     body, sage-deep for its tab. Lighthouse failed the whole set at 4.46:1 and
+     2.1:1 before these values. */
+  --color-olive: #636b4e;
+  --color-sage: #c5cbb3;
+  --color-sage-deep: #b3bba0;
   --color-rust: #ac4a2e;
   --color-brass: #b08d57;
 
@@ -130,10 +136,14 @@
 }
 
 @utility grain-layer {
-  /* Fractal noise, tiled. Low opacity: this should read as tooth in the
-     paper, not as visible static. */
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23g)' opacity='0.5'/%3E%3C/svg%3E");
-  mix-blend-mode: multiply;
+  /* A pre-rendered bitmap, not an inline feTurbulence SVG.
+     The SVG had to be rasterised by the browser on every paint, which measured
+     as 2.36s of LCP render delay on a throttled mobile CPU; a bitmap is decoded
+     instead. Plain alpha compositing replaces the multiply blend for the same
+     reason: a full-viewport blended layer cannot take the fast path.
+     Regenerate the tile with: node scripts/generate-grain.cjs */
+  background-image: url("data:image/png;base64,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");
+  background-size: 64px 64px;
   pointer-events: none;
 }
 

@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { Caveat, Fraunces, Inter } from "next/font/google";
-import { MotionProvider } from "@/components/motion/motion-provider";
 import { profile } from "@/content/profile";
 import { siteUrl } from "@/lib/site";
 import "./globals.css";
@@ -10,18 +9,22 @@ const inter = Inter({
   subsets: ["latin"],
 });
 
-/* Fraunces carries two extra axes on top of weight and optical size. WONK adds
-   the swashed, slightly off-kilter letterforms; SOFT rounds the terminals. Both
-   are what keep the headings from reading as a generic serif. */
+/* Fraunces carries WONK on top of weight and optical size. WONK adds the
+   swashed, slightly off-kilter letterforms that keep the headings from reading
+   as a generic serif; SOFT only rounds the terminals, which is barely visible
+   at heading sizes and costs a slice of the variable font. */
 const fraunces = Fraunces({
   variable: "--font-fraunces",
   subsets: ["latin"],
-  axes: ["SOFT", "WONK"],
+  axes: ["WONK"],
 });
 
+/* A single weight, not the variable font: the handwriting is only ever used at
+   its regular cut, and the static file is a fraction of the variable one. */
 const caveat = Caveat({
   variable: "--font-caveat",
   subsets: ["latin"],
+  weight: "400",
 });
 
 export const metadata: Metadata = {
@@ -83,7 +86,11 @@ export default function RootLayout({
           // biome-ignore lint/security/noDangerouslySetInnerHtml: this is the standard way to emit JSON-LD, and the object is a local constant built from our own content module, never user input.
           dangerouslySetInnerHTML={{ __html: JSON.stringify(personJsonLd) }}
         />
-        <MotionProvider>{children}</MotionProvider>
+        {/* No motion provider and no animation runtime on the client. Every
+            entrance animation is CSS (see the `settle` class) and every
+            navigation transition is the browser's own View Transition API, so
+            there is nothing for a JS animation library to do here. */}
+        {children}
       </body>
     </html>
   );

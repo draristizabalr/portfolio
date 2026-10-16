@@ -59,6 +59,8 @@ S13. Structure: desk at `/`, each section at its own linkable route. Folder is a
 S14. Aesthetic: paper and wood. Kraft/cream/ink/olive palette, editorial serif for
    headings, cardboard folders with handwritten labels, long soft shadows.
 
+## Tasks
+
 T1. App Router migration, cacheComponents, project skeleton. (S5, S7, S8, S9)
 
 T2. Design foundation: paper/wood tokens, fonts, grain textures, view transition
@@ -85,6 +87,13 @@ T9. SEO and metadata: per-route metadata, `sitemap.ts`, `robots.ts`,
 
 T10. Verification: build, lint, typecheck, responsive, keyboard accessibility,
    reduced-motion, Lighthouse. (S5, S6, S8, S11)
+
+T11. Unit tests for the contact validation contract, with the domain logic
+   extracted out of the Server Action so it is reachable. (S2, S12)
+
+T12. End-to-end tests over the desk: navigation, the shared-element morph,
+   per-route metadata, the contact form, and the no-JavaScript guarantee.
+   (S1, S2, S3, S4, S13)
 
 ## Log
 
@@ -246,3 +255,115 @@ layout, the folders link to routes that must exist, and the sheet imports the
 action — so any split would have produced commits that do not build. That is a
 worse history than one honest large commit, and it is recorded here rather than
 hidden.
+
+L16 (T11, unit tests): the contact schema could not be tested where it lived.
+A `"use server"` module may only export async functions, so the schema, the
+field-error mapping and the honeypot check were all unreachable from a test. The
+whole decision was extracted into `parseContactSubmission` in `src/lib/contact.ts`,
+which is pure and returns one of three outcomes: valid, invalid, or honeypot. The
+action now only reads that result and sends.
+
+22 tests in `src/lib/contact.test.ts`, covering each field's minimum and maximum
+boundary, the honeypot, trimming, and multi-field reporting. They were then
+mutation-checked rather than trusted: setting the message minimum from 10 to 9
+turned exactly `rejects a message of 9 characters` red, and disabling the
+honeypot check turned exactly `treats a submission that fills only the hidden
+field as a bot` red. Restored, all 22 pass.
+
+One test failed on first run and the test was wrong, not the code: an entirely
+empty `FormData` is reported as invalid with all three fields flagged, not as a
+honeypot. Naming the missing fields is what helps a human whose client posted an
+empty body, and it tells a bot nothing. The honeypot is a filled field, which is
+a different case and is tested separately.
+
+L17 (T12, end-to-end tests): `playwright.config.ts` runs four specs over mobile
+(390x844) and desktop (1440x900), against the production build rather than the
+dev server, because the dev overlay injects its own portal into the DOM and
+would both pollute the heading count and mask the no-JavaScript behaviour.
+46 tests, all passing. They pin the folder-to-route wiring, the morph navigation
+and its close control, each section's own title and self-referencing canonical,
+the single visible heading, the safe social links, the digits-only wa.me format,
+both contact-form validation paths, the honeypot's position, the absence of
+horizontal overflow, a clean console error channel, and the no-JavaScript
+guarantee from L12.
+
+Four tests failed on the first run and all four were faults in the tests: an
+unscoped `[aria-live]` matched the App Router's own route announcer as well as
+the sheet's status paragraph, and two specs submitted forms that the browser's
+native validation blocked before the Server Action could run, so no server-side
+error ever appeared. The native checks pass a whitespace-only value and a
+five-character message, which is what the corrected specs use.
+
+L18 (T10, Lighthouse against the production build). Four rounds, because the
+first three each disproved a hypothesis:
+
+Round 1 — mobile 93 / 96 / 100 / 100, desktop 100 / 96 / 100 / 100. Two real
+defects. `color-contrast` scored 0: the olive folder's body was `#7b8367` under
+`text-ink-soft`, measuring 2.1:1 where 4.5:1 is required, and its tab was 4.46:1.
+Mobile LCP was 3.3s.
+
+Round 2 — after darkening `--color-olive`, adding a sage pair for that folder,
+and trimming the font payload from 181KB to 131KB (Caveat to a single static
+weight, Fraunces down to the WONK axis alone): mobile 95 / 100 / 100 / 100,
+desktop 100 / 100 / 100 / 100. Contrast cleared on both viewports.
+
+Round 3 — the LCP breakdown said 82% was render delay, and the LCP element was
+the `grain-layer` overlay. The inline `feTurbulence` SVG had to be rasterised on
+every paint, so it was replaced with a pre-rendered 64x64 PNG data URI and the
+`mix-blend-mode: multiply` was dropped for plain alpha compositing. Main-thread
+work fell (style and layout 132ms to 96ms, other 224ms to 179ms) but LCP did not
+move off 3.0s.
+
+Round 4 — `motion` turned out to be tree-shaken out of the client bundle
+entirely, so the `MotionProvider` wrapper in the root layout was dead code. It
+was removed, and the client JS measured 704KB before and after: confirmed, not
+assumed. LCP still 3.0s.
+
+Conclusion, reported rather than chased: the remaining render delay is the App
+Router's baseline hydration cost on Lighthouse's 4x-throttled mobile CPU, not
+application code. The observed breakdown is script evaluation 230ms, other
+179ms, style and layout 96ms — about 0.6s real, which the 4x multiplier turns
+into the 2.4s in the report. Cutting it further would mean trading the form's
+inline per-field errors for a server-rendered message, which is a product
+decision and not one to take on the user's behalf. Final state: mobile
+95 / 100 / 100 / 100, desktop 100 / 100 / 100 / 100, LCP 3.0s mobile and 0.6s
+desktop.
+
+L19 (a measurement that broke the look, caught by looking): replacing the
+`feTurbulence` SVG with a bitmap of raw white noise fixed the render cost but
+ruined the texture. `fractalNoise` is spatially correlated and reads as paper
+tooth; white noise is maximally high-frequency and at the same average darkness
+reads as television static. The first screenshot after the swap showed the
+board covered in speckle. The generator now combines two blurred octaves at a
+much lower alpha, and the screenshot confirms the paper reads as paper again.
+This is the second time in this feature that a green build and a better number
+hid a regression that only looking at the page could find.
+
+L20 (left in place, flagged rather than decided): `motion` is installed and
+nothing uses it. The chosen technique was CSS 3D plus Motion, but every case it
+would have covered ended up served better by something else — the entrance
+animations by a CSS class that works without JavaScript, and the navigation by
+the browser's own View Transitions. It costs nothing at runtime because it is
+tree-shaken, and it is the right tool for the drag-and-spring desk interactions
+that are the obvious next step, so it stays until the user says otherwise.
+
+L21 (making the Lighthouse finding durable): fixing the contrast was not enough
+on its own. Nothing in the suite would have failed if a tone were retuned back
+under 4.5:1, so the audit would have been the only thing standing between the
+site and an unreadable folder. `e2e/contrast.spec.ts` now computes the WCAG
+relative luminance in the browser, walks up to the first opaque ancestor
+background, and asserts a ratio of at least 4.5:1 for every folder's tab, title
+and summary plus the sheet's heading and field labels.
+
+It was mutation-checked, and the check is the interesting part: setting
+`--color-sage` back to the old `#7b8367` produced `experiencia folder title:
+4.11:1` and `experiencia folder summary: 2.10:1` — the same two figures
+Lighthouse reported, to two decimals. An independent implementation agreeing
+with the audit is what makes this test worth having rather than a restatement of
+the fix.
+
+Known gap, stated rather than papered over: the sheet's success message uses
+`text-olive` on paper, which is the one other place the olive token is used and
+which the darkening also fixed. It is not asserted, because that element only
+renders after a successful send and the send path needs credentials this
+environment does not have. Its computed ratio is 5.0:1.
