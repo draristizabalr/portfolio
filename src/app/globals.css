@@ -37,6 +37,19 @@
   /* Motion — one shared easing vocabulary keeps the whole desk coherent. */
   --ease-paper: cubic-bezier(0.22, 0.61, 0.36, 1);
   --ease-thud: cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  /* A single slow light drift on the wall. Long and low-contrast on purpose:
+     it should read as daylight moving, not as an effect demanding attention. */
+  --animate-light-drift: light-drift 28s ease-in-out infinite alternate;
+
+  @keyframes light-drift {
+    from {
+      transform: translate3d(0, 0, 0) scale(1);
+    }
+    to {
+      transform: translate3d(4rem, 2.5rem, 0) scale(1.15);
+    }
+  }
 }
 
 /* Fonts are declared inline because they reference the CSS variables that
@@ -91,6 +104,27 @@
    they scale to any surface without a raster asset or an extra request.
    --------------------------------------------------------------------------- */
 
+/* Content settles into place on first paint.
+   This is a CSS animation rather than a JS-driven one on purpose. A JS library
+   writes its initial state into the server-rendered HTML, so a visitor whose
+   JavaScript never loads would be left looking at an invisible desk — including
+   an invisible contact form. A CSS animation needs no JavaScript to reach its
+   end state, so the content is always readable and the motion is the extra. */
+.settle {
+  animation: settle 620ms var(--ease-paper) both;
+}
+
+@keyframes settle {
+  from {
+    opacity: 0;
+    translate: 0 18px;
+  }
+  to {
+    opacity: 1;
+    translate: 0;
+  }
+}
+
 @utility grain {
   position: relative;
 }
@@ -139,8 +173,11 @@
 
 /* ---------------------------------------------------------------------------
    View transitions
-   Durations are asymmetric on purpose: outgoing content leaves quickly so it
-   stops competing for attention, incoming content arrives gently.
+   The only live transition is the folder-to-window morph: a folder on the desk
+   and the window it opens share a `name`, and `share="morph"` puts both in the
+   `morph` class, which is what these rules target. Durations are asymmetric on
+   purpose — outgoing content leaves quickly so it stops competing for
+   attention, incoming content arrives gently.
    --------------------------------------------------------------------------- */
 
 :root {
@@ -150,52 +187,24 @@
 }
 
 /* A folder becomes a window. */
-::view-transition-group(.folder-open) {
+::view-transition-group(.morph) {
   animation-duration: var(--duration-move);
   animation-timing-function: var(--ease-paper);
 }
 
-::view-transition-old(.folder-open) {
+::view-transition-old(.morph) {
   animation: var(--duration-exit) ease-in both vt-fade reverse;
 }
 
-::view-transition-new(.folder-open) {
+::view-transition-new(.morph) {
   animation:
     var(--duration-enter) ease-out var(--duration-exit) both vt-fade,
     var(--duration-move) var(--ease-paper) both vt-rise;
 }
 
-/* Opening a section reads as forward motion, closing as a return. */
-::view-transition-old(.nav-forward) {
-  --vt-shift: -48px;
-  animation:
-    var(--duration-exit) ease-in both vt-fade reverse,
-    var(--duration-move) var(--ease-paper) both vt-slide reverse;
-}
-
-::view-transition-new(.nav-forward) {
-  --vt-shift: 48px;
-  animation:
-    var(--duration-enter) ease-out var(--duration-exit) both vt-fade,
-    var(--duration-move) var(--ease-paper) both vt-slide;
-}
-
-::view-transition-old(.nav-back) {
-  --vt-shift: 48px;
-  animation:
-    var(--duration-exit) ease-in both vt-fade reverse,
-    var(--duration-move) var(--ease-paper) both vt-slide reverse;
-}
-
-::view-transition-new(.nav-back) {
-  --vt-shift: -48px;
-  animation:
-    var(--duration-enter) ease-out var(--duration-exit) both vt-fade,
-    var(--duration-move) var(--ease-paper) both vt-slide;
-}
-
-/* The desk itself must not move. It is the fixed reference point that makes
-   the content's motion legible. */
+/* The desk itself must not move: it is the fixed reference point that makes the
+   content's motion legible. It has no counterpart on a section route, so it
+   leaves immediately rather than animating out. */
 ::view-transition-group(desk-surface) {
   animation: none;
   z-index: 1;
@@ -223,15 +232,6 @@
   to {
     opacity: 1;
     filter: blur(0);
-  }
-}
-
-@keyframes vt-slide {
-  from {
-    translate: var(--vt-shift, 0);
-  }
-  to {
-    translate: 0;
   }
 }
 

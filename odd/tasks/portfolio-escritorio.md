@@ -134,3 +134,115 @@ Tailwind v4; skip `tw-animate-css` 1.4.0 (prefix/spacing regression).
 L4 (user decisions): App Router migration approved. CSS 3D + Motion approved, no
 Three.js. Vertical scrolling scene approved, one layout. Resend + Server Action
 approved. Routes + windows approved. Paper and wood aesthetic approved.
+
+L5 (implementation, commit 9fc9bc8): App Router migration and the design
+foundation. Build green with every route prerendered static and `biome check`
+exit 0. `/` and `/_not-found` were the only routes at that point.
+
+L6 (evidence, library traps found the hard way):
+- `lucide-react` ships no brand marks at all — `Github`, `Linkedin` and
+  `Instagram` are simply absent. Brand icons come from
+  `@icons-pack/react-simple-icons` instead.
+- Simple Icons has also dropped LinkedIn over trademark policy, so
+  `SiLinkedin` does not exist in that package either. The LinkedIn mark is
+  hand-written in `src/components/icons/brand-icon.tsx` from the CC0 Simple
+  Icons v13 geometry, drawn to the same props contract as the packaged icons.
+- `tw-animate-css` 1.4.0 does NOT break Tailwind's `--spacing` in this setup;
+  verified in the built CSS (`--spacing:.25rem`, `.p-4{padding:calc(var(--spacing) * 4)}`)
+  rather than assumed from the release notes.
+- Piping a command into `tail` masks its exit code. One false green was already
+  produced this way; every check now uses `set -o pipefail`.
+- Deleting `src/pages` leaves stale route types in `.next/dev/types/validator.ts`
+  that fail the typecheck until `.next` is removed.
+
+L7 (design corrections after looking at real screenshots): the first build of the
+wall board ruled each row with a repeating background gradient, which drifted out
+of alignment with rows whose text wrapped, and the handles wrapped onto two lines.
+Rows are now ruled individually with a bottom border and the handle uses
+`min-w-0 truncate`. The desk grid was `lg:grid-cols-2` holding a single child,
+which stranded the telephone off-centre on a 1440px viewport; it is now
+`lg:grid-cols-3` at `lg:max-w-5xl` so the four folders plus the telephone fill it.
+The telephone handset was a plain pill and is now two cups joined by a bar.
+
+L8 (decisions recorded while implementing T9):
+- `sitemap.ts` omits `lastModified`. Producing it would require `new Date()`
+  during render, which Cache Components rejects as a request-time read.
+- The root layout deliberately sets no `alternates.canonical`. A single canonical
+  on the root layout would declare every section a duplicate of the home page;
+  each section route declares its own instead.
+- Motion animates through inline styles, so the CSS `prefers-reduced-motion`
+  guard cannot stop it. `MotionConfig reducedMotion="user"` in the root layout
+  is what actually honours the preference.
+
+L9 (delegation): T4 and T5 (window chrome plus the four section routes) were
+handed to `gentle-ai-worker` under the context backstop, with an
+`## Allowed edit surfaces` block limited to the window, the backdrop, the four
+routes, `src/app/page.tsx` and `src/app/globals.css`.
+
+L10 (open, needs the user): every value in `src/content/profile.ts` and
+`src/content/sections.ts` marked PLACEHOLDER must be replaced before the site is
+publishable. The WhatsApp number must be digits only including the country code,
+because that is the format wa.me requires.
+
+L11 (delegation outcome): the `gentle-ai-worker` handoff for T4/T5 produced no
+files and stalled at 16 turns / 28 tool calls with its last action reported as
+`bash`. It was cancelled and the work was completed inline. The likely cause was
+contention on `.next`: a `next dev` server was holding the directory while the
+worker tried to build. Lesson for later delegations: stop the dev server before
+handing a writer a task whose gate is `next build`.
+
+L12 (bugs found by looking at the running page, not by the build):
+- `"use server"` may only export async functions. Exporting
+  `initialContactState` (a plain object) from the action module made every call
+  fail with a 500 and `A "use server" file can only export async functions,
+  found object`. The state shape and its initial value now live in
+  `src/lib/contact.ts`.
+- React keys were taken from content strings. The placeholder copy repeats
+  `PLACEHOLDER`, so nine duplicate-key warnings fired. Static lists that never
+  reorder now use positional keys, suppressed per site with the reason recorded.
+- The contact action's error ids were shared across fields, which would have
+  duplicated an `id` in the DOM as soon as two fields failed at once. Each field
+  now owns its error id, verified through `aria-describedby`.
+- `Reveal` (motion `whileInView`) server-rendered `style="opacity:0"` into the
+  HTML. With JavaScript blocked, the telephone, the contact form and the wall
+  content stayed permanently invisible — the main call to action of the whole
+  site, unreachable. Replaced by `Settle`, a CSS-animation server component with
+  no JavaScript at all. Verified with `javaScriptEnabled: false`: after the
+  animation ends every one of those elements computes to `opacity 1`.
+- The `Settle` wrapper is the grid child, so a `col-span-3` declared on the
+  sheet inside it was ignored and the form landed in a single cell. The span now
+  lives on the wrapper.
+- The folder tab had a fixed `w-32`, so "experiencia laboral" wrapped onto the
+  folder body. Tabs now size to their own label.
+
+L13 (verification actually observed, not assumed):
+- `bun run build` exit 0, and all nine routes prerender static: `/`,
+  `/_not-found`, `/experiencia`, `/opengraph-image`, `/personal`, `/profesional`,
+  `/proyectos`, `/robots.txt`, `/sitemap.xml`.
+- `bunx biome check` exit 0 over 33 files; `bunx tsc --noEmit` exit 0.
+- React's `ViewTransition` works from a server component in this version; no
+  client wrapper was needed.
+- One visible `<h1>` per route. On a section route the desk's `<h1>` is still in
+  the DOM but inside an `<Activity mode="hidden">` subtree, so it computes to
+  `display: none` and is out of the accessibility tree.
+- Server-side validation proven through the browser: a whitespace-only name
+  passes the native `required` check and is then rejected by zod, producing
+  `aria-invalid`, a per-field `aria-describedby` that resolves, and the live
+  message "Revisá los campos marcados.".
+- No horizontal overflow at 390x844 or 1440x900; no console errors.
+- Tab order is real DOM order: the three social links, the four folders, the
+  telephone, then the first form input.
+
+L14 (not verified, and must not be reported as working): the Resend send path
+has never executed. There are no credentials in this environment, so the branch
+that calls `resend.emails.send` is unexercised. What is proven is the validation
+path and the missing-key guard, which returns a calm message rather than
+throwing. The operator needs `RESEND_API_KEY`, `CONTACT_FROM_EMAIL` on a verified
+domain, and optionally `CONTACT_TO_EMAIL` and `NEXT_PUBLIC_SITE_URL`.
+
+L15 (commit slice boundary): the whole implementation landed as one commit. The
+pieces are genuinely interdependent — `src/lib/site.ts` is imported by the root
+layout, the folders link to routes that must exist, and the sheet imports the
+action — so any split would have produced commits that do not build. That is a
+worse history than one honest large commit, and it is recorded here rather than
+hidden.

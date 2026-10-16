@@ -1,14 +1,31 @@
-/* Temporary materials probe: this page is replaced by the desk scene in T3.
-   Its only job right now is to force Tailwind to emit the custom utilities so
-   they can be inspected in the built CSS. */
+import { Desk } from "@/components/desk/desk";
+import { Folder } from "@/components/desk/folder";
+import { PaperSheet } from "@/components/desk/paper-sheet";
+import { Telephone } from "@/components/desk/telephone";
+import { Wall } from "@/components/desk/wall";
+import { Settle } from "@/components/settle";
+import { folders } from "@/content/sections";
+
 export default function Home() {
   return (
-    <main className="min-h-dvh p-4">
-      <h1 className="font-display text-4xl">Portfolio</h1>
-      <p className="font-hand text-2xl">handwritten</p>
-      <div className="grain grain-layer h-40 w-40 bg-paper" />
-      <div className="wood-grain h-40 w-40" />
-      <div className="lift h-40 w-40 bg-kraft" />
+    <main className="min-h-dvh">
+      <Wall />
+      <Desk>
+        {/* The folders are deliberately NOT wrapped in <Settle>. They are the
+            named participants of the folder-to-window view transition, and an
+            entrance animation that starts them at opacity 0 would be captured
+            as an invisible snapshot, breaking the morph. The morph is their
+            entrance animation. */}
+        {folders.map((folder) => (
+          <Folder key={folder.slug} folder={folder} />
+        ))}
+        <Settle delay={50}>
+          <Telephone />
+        </Settle>
+        <Settle delay={120} className="sm:col-span-2 lg:col-span-3">
+          <PaperSheet />
+        </Settle>
+      </Desk>
     </main>
   );
 }
