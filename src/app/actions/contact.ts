@@ -1,33 +1,8 @@
 "use server";
 
 import { Resend } from "resend";
-import { z } from "zod";
 import { profile } from "@/content/profile";
-import type { ContactState } from "@/lib/contact";
-
-const MAX_MESSAGE = 4000;
-
-/**
- * The honeypot is a text field a sighted visitor never sees and therefore never
- * fills. A submission that carries it is a bot, and gets the same answer a
- * human gets so the trap is not revealed.
- */
-const contactSchema = z.object({
-  name: z
-    .string()
-    .trim()
-    .min(1, "Decime cómo te llamás.")
-    .max(80, "Máximo 80 caracteres."),
-  email: z
-    .email("Ese correo no parece válido.")
-    .max(200, "Máximo 200 caracteres."),
-  message: z
-    .string()
-    .trim()
-    .min(10, "Contame un poco más, al menos 10 caracteres.")
-    .max(MAX_MESSAGE, `Máximo ${MAX_MESSAGE} caracteres.`),
-  company: z.string().max(0).optional(),
-});
+import { type ContactState, parseContactSubmission } from "@/lib/contact";
 
 /** Digits-only wa.me format is a content concern; this is the mail one. */
 function recipient() {
@@ -38,41 +13,18 @@ export async function sendContactMessage(
   _prevState: ContactState,
   formData: FormData,
 ): Promise<ContactState> {
-  const parsed = contactSchema.safeParse({
-    name: formData.get("name"),
-    email: formData.get("email"),
-    message: formData.get("message"),
-    company: formData.get("company") ?? "",
-  });
+  const result = parseContactSubmission(formData);
 
-  if (!parsed.success) {
-    const fieldErrors: ContactState["fieldErrors"] = {};
-    for (const issue of parsed.error.issues) {
-      const field = issue.path[0];
-      if (field === "name" || field === "email" || field === "message") {
-        // Keep the first message per field: repeating a field is noise.
-        fieldErrors[field] ??= issue.message;
-      }
-    }
-
-    // A filled honeypot fails validation on `company`, which is not a field a
-    // human can see. Answer as if it worked.
-    if (
-      fieldErrors.name === undefined &&
-      fieldErrors.email === undefined &&
-      fieldErrors.message === undefined
-    ) {
-      return { status: "success", message: "Listo, te llegó el mensaje." };
-    }
-
-    return {
-      status: "error",
-      message: "Revisá los campos marcados.",
-      fieldErrors,
-    };
+  if (result.kind === "honeypot") {
+    // Same answer a human gets, so the trap is never revealed.
+    return { status: "success", message: "Listo, te llegó el mensaje." };
   }
 
-  const { name, email, message } = parsed.data;
+  if (result.kind === "invalid") {
+    return result.state;
+  }
+
+  const { name, email, message } = result.submission;
 
   const apiKey = process.env.RESEND_API_KEY;
   if (!apiKey) {
@@ -92,7 +44,7 @@ export async function sendContactMessage(
     from: process.env.CONTACT_FROM_EMAIL ?? "onboarding@resend.dev",
     to: recipient(),
     // Reply goes straight back to the visitor, and the address is already
-    // validated by the schema above.
+    // validated by the schema.
     replyTo: email,
     // Deliberately fixed: no visitor input reaches a mail header, so there is
     // no header-injection surface to defend.
