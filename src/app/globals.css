@@ -1,0 +1,278 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+/* ---------------------------------------------------------------------------
+   Design tokens — paper, wood and ink.
+   Everything is named for the physical material it stands in for, so a class
+   like `bg-kraft` reads as the thing it paints.
+   --------------------------------------------------------------------------- */
+
+@theme {
+  /* Paper and cardboard */
+  --color-paper: #f7f2e7;
+  --color-paper-shade: #ece2cf;
+  --color-manila: #e8d9b8;
+  --color-kraft: #d8c3a0;
+  --color-kraft-deep: #bfa47a;
+
+  /* Wood */
+  --color-desk: #7c5c3c;
+  --color-desk-light: #9a7550;
+  --color-desk-deep: #563b23;
+
+  /* Wall */
+  --color-wall: #e6ded0;
+  --color-wall-shade: #d1c7b5;
+
+  /* Ink */
+  --color-ink: #241f19;
+  --color-ink-soft: #574c40;
+  --color-ink-faint: #8a7d6d;
+
+  /* Accents */
+  --color-olive: #6b7355;
+  --color-rust: #ac4a2e;
+  --color-brass: #b08d57;
+
+  /* Motion — one shared easing vocabulary keeps the whole desk coherent. */
+  --ease-paper: cubic-bezier(0.22, 0.61, 0.36, 1);
+  --ease-thud: cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* Fonts are declared inline because they reference the CSS variables that
+   next/font injects at build time. */
+@theme inline {
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-fraunces), ui-serif, Georgia, serif;
+  --font-hand: var(--font-caveat), ui-rounded, cursive;
+}
+
+/* ---------------------------------------------------------------------------
+   Base
+   --------------------------------------------------------------------------- */
+
+@layer base {
+  html {
+    /* The desk is a physical surface: rubber-band scrolling breaks the
+       illusion that the objects are resting on something. */
+    overscroll-behavior-y: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  body {
+    background-color: var(--color-wall);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-synthesis-weight: none;
+    text-rendering: optimizeLegibility;
+  }
+
+  ::selection {
+    background-color: color-mix(in oklab, var(--color-brass) 45%, transparent);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-rust);
+    outline-offset: 3px;
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-display);
+    font-weight: 500;
+    letter-spacing: -0.015em;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Materials
+   Paper grain and wood grain are generated rather than shipped as images, so
+   they scale to any surface without a raster asset or an extra request.
+   --------------------------------------------------------------------------- */
+
+@utility grain {
+  position: relative;
+}
+
+@utility grain-layer {
+  /* Fractal noise, tiled. Low opacity: this should read as tooth in the
+     paper, not as visible static. */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23g)' opacity='0.5'/%3E%3C/svg%3E");
+  mix-blend-mode: multiply;
+  pointer-events: none;
+}
+
+@utility wood-grain {
+  background-image:
+    repeating-linear-gradient(
+      92deg,
+      color-mix(in oklab, var(--color-desk-deep) 12%, transparent) 0 1px,
+      transparent 1px 7px
+    ),
+    repeating-linear-gradient(
+      88deg,
+      color-mix(in oklab, var(--color-desk-deep) 8%, transparent) 0 2px,
+      transparent 2px 19px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      color-mix(in oklab, var(--color-desk-light) 22%, transparent) 0 3px,
+      transparent 3px 41px
+    ),
+    linear-gradient(
+      180deg,
+      var(--color-desk-light) 0%,
+      var(--color-desk) 45%,
+      var(--color-desk-deep) 100%
+    );
+}
+
+/* Long, soft, low-contrast shadow. Real desks diffuse light. */
+@utility lift {
+  box-shadow:
+    0 1px 1px color-mix(in oklab, var(--color-desk-deep) 18%, transparent),
+    0 8px 16px -6px color-mix(in oklab, var(--color-desk-deep) 30%, transparent),
+    0 24px 48px -20px
+    color-mix(in oklab, var(--color-desk-deep) 35%, transparent);
+}
+
+/* ---------------------------------------------------------------------------
+   View transitions
+   Durations are asymmetric on purpose: outgoing content leaves quickly so it
+   stops competing for attention, incoming content arrives gently.
+   --------------------------------------------------------------------------- */
+
+:root {
+  --duration-exit: 140ms;
+  --duration-enter: 220ms;
+  --duration-move: 420ms;
+}
+
+/* A folder becomes a window. */
+::view-transition-group(.folder-open) {
+  animation-duration: var(--duration-move);
+  animation-timing-function: var(--ease-paper);
+}
+
+::view-transition-old(.folder-open) {
+  animation: var(--duration-exit) ease-in both vt-fade reverse;
+}
+
+::view-transition-new(.folder-open) {
+  animation:
+    var(--duration-enter) ease-out var(--duration-exit) both vt-fade,
+    var(--duration-move) var(--ease-paper) both vt-rise;
+}
+
+/* Opening a section reads as forward motion, closing as a return. */
+::view-transition-old(.nav-forward) {
+  --vt-shift: -48px;
+  animation:
+    var(--duration-exit) ease-in both vt-fade reverse,
+    var(--duration-move) var(--ease-paper) both vt-slide reverse;
+}
+
+::view-transition-new(.nav-forward) {
+  --vt-shift: 48px;
+  animation:
+    var(--duration-enter) ease-out var(--duration-exit) both vt-fade,
+    var(--duration-move) var(--ease-paper) both vt-slide;
+}
+
+::view-transition-old(.nav-back) {
+  --vt-shift: 48px;
+  animation:
+    var(--duration-exit) ease-in both vt-fade reverse,
+    var(--duration-move) var(--ease-paper) both vt-slide reverse;
+}
+
+::view-transition-new(.nav-back) {
+  --vt-shift: -48px;
+  animation:
+    var(--duration-enter) ease-out var(--duration-exit) both vt-fade,
+    var(--duration-move) var(--ease-paper) both vt-slide;
+}
+
+/* The desk itself must not move. It is the fixed reference point that makes
+   the content's motion legible. */
+::view-transition-group(desk-surface) {
+  animation: none;
+  z-index: 1;
+}
+
+::view-transition-old(desk-surface) {
+  display: none;
+}
+
+::view-transition-new(desk-surface) {
+  animation: none;
+}
+
+/* While a transition runs the browser paints an overlay over the page, which
+   would swallow clicks. Let them reach the live page. */
+::view-transition {
+  pointer-events: none;
+}
+
+@keyframes vt-fade {
+  from {
+    opacity: 0;
+    filter: blur(2px);
+  }
+  to {
+    opacity: 1;
+    filter: blur(0);
+  }
+}
+
+@keyframes vt-slide {
+  from {
+    translate: var(--vt-shift, 0);
+  }
+  to {
+    translate: 0;
+  }
+}
+
+@keyframes vt-rise {
+  from {
+    translate: 0 12px;
+  }
+  to {
+    translate: 0;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Reduced motion
+   Positional movement is the strongest trigger for motion sensitivity. Drop
+   durations to zero rather than removing the transitions, so the browser's
+   default instant swap takes over.
+   --------------------------------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(*),
+  ::view-transition-new(*),
+  ::view-transition-group(*) {
+    /* biome-ignore lint/complexity/noImportantStyles: a reduced-motion guard has
+       to beat author styles and the inline styles motion writes, which is
+       exactly what !important is for. */
+    animation-duration: 0s !important;
+    /* biome-ignore lint/complexity/noImportantStyles: see above. */
+    animation-delay: 0s !important;
+  }
+
+  *,
+  *::before,
+  *::after {
+    /* biome-ignore lint/complexity/noImportantStyles: see above. */
+    animation-duration: 0.01ms !important;
+    /* biome-ignore lint/complexity/noImportantStyles: see above. */
+    animation-iteration-count: 1 !important;
+    /* biome-ignore lint/complexity/noImportantStyles: see above. */
+    transition-duration: 0.01ms !important;
+    /* biome-ignore lint/complexity/noImportantStyles: see above. */
+    scroll-behavior: auto !important;
+  }
+}
