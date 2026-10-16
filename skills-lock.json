@@ -1,0 +1,94 @@
+{
+  "version": 1,
+  "skills": {
+    "accessibility": {
+      "source": "addyosmani/web-quality-skills",
+      "sourceType": "autoskills-registry",
+      "computedHash": "2174f783a038a7ca4869c4c18e14726ec13b9c6b705d59253f647d0ca37cb78d"
+    },
+    "bun": {
+      "source": "midudev/autoskills",
+      "sourceType": "autoskills-registry",
+      "computedHash": "1386ed5490ed278e38312a416c9aa074dbe3849f32ae7f841e4142fef5d4df94"
+    },
+    "composition-patterns": {
+      "source": "vercel-labs/agent-skills",
+      "sourceType": "autoskills-registry",
+      "computedHash": "c124390cc3441844903ada94cb5820b23d922f2d0ad34e01e029e410197c8a32"
+    },
+    "frontend-design": {
+      "source": "anthropics/skills",
+      "sourceType": "autoskills-registry",
+      "computedHash": "a4e6516a601f72ffd8bcd0d64609e8ba724d2ce92569a059a6890a5caadf072b"
+    },
+    "ios-design": {
+      "source": "uizze.sh",
+      "sourceUrl": "https://uizze.sh/",
+      "sourceType": "well-known",
+      "computedHash": "6b92ffbe225bdd877e1245e843c5b79f1e37f7ab40d3f802937044f6aee29d20",
+      "wellKnownDigest": "sha256:c054f593fefc971788a3e0489c30f7fb5508b07c55b2d06ad14b3a9a99a892f0"
+    },
+    "next-cache-components-adoption": {
+      "source": "vercel/next.js",
+      "sourceType": "autoskills-registry",
+      "computedHash": "1642ae2a1bc48f484240cb9c9669e32846aa5e4f9fa68cd650ad4817fa070711"
+    },
+    "playwright-cli": {
+      "source": "microsoft/playwright-cli",
+      "sourceType": "github",
+      "skillPath": "skills/playwright-cli/SKILL.md",
+      "computedHash": "ffbd59a973d4e2c19c6ecc31254a14497069c362f1d1820b6a6cfbe62de34a73"
+    },
+    "ponytail-audit": {
+      "source": "dietrichgebert/ponytail",
+      "sourceType": "github",
+      "skillPath": "skills/ponytail-audit/SKILL.md",
+      "computedHash": "1d718f893dabc01caad0dacef86444b5b4b3e1e59409527d66e8b5dd0cd85ae0"
+    },
+    "ponytail-help": {
+      "source": "dietrichgebert/ponytail",
+      "sourceType": "github",
+      "skillPath": "skills/ponytail-help/SKILL.md",
+      "computedHash": "0fb058b8b50c27d609ff6bfb34b61d52627a81ff207281acc4be8558dbda7e3f"
+    },
+    "react-best-practices": {
+      "source": "vercel-labs/agent-skills",
+      "sourceType": "autoskills-registry",
+      "computedHash": "502eb06700e2c3cb1bd7f710860528f72281320bd5171a2087b05a090b573dc1"
+    },
+    "seo": {
+      "source": "addyosmani/web-quality-skills",
+      "sourceType": "autoskills-registry",
+      "computedHash": "7495da57766c99f787a729d4a21234ecb5d29d90f304a0d9a5996dcdc1eec048"
+    },
+    "seo-audit": {
+      "source": "coreyhaines31/marketingskills",
+      "sourceType": "github",
+      "skillPath": "skills/seo-audit/SKILL.md",
+      "computedHash": "928ca75d9899be7d17d7cbfa21aee28cc2e66681b2f4e19e6c9bd2a8330daa24"
+    },
+    "tailwind-css-patterns": {
+      "source": "giuseppe-trisciuoglio/developer-kit",
+      "sourceType": "autoskills-registry",
+      "computedHash": "8fd534b64b3f305ade80c207e2f9ba4338d5e409e355af9f724c36764b6709c1"
+    },
+    "typescript-advanced-types": {
+      "source": "wshobson/agents",
+      "sourceType": "autoskills-registry",
+      "computedHash": "cb5d18bc19191b388cc49c15ff98dcbc714fa343373d078be00833e8a18ef291"
+    },
+    "ui-taste": {
+      "source": "uizze.sh",
+      "sourceUrl": "https://uizze.sh/",
+      "sourceType": "well-known",
+      "computedHash": "9b73951ae54b7d1eb81e69bb2f47d1622b3813bbefbd6c0aaa36dfcf938f1f27",
+      "wellKnownDigest": "sha256:f02f2e84c28514076aca3ff616700b6c378b1b64339d8280ea011c26e2b3e07e"
+    },
+    "vitest": {
+      "source": "hairyf/skills",
+      "sourceType": "github",
+      "skillPath": "skills/vitest/SKILL.md",
+      "computedHash": "669c7275f7e1379b06b2bcfa593603aead4c983b951c7e8edbc09640aa38d0a1"
+    }
+  }
+}
